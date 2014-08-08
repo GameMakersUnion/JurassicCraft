@@ -6,13 +6,13 @@ public class Selection : MonoBehaviour
 
     public GameObject Box;
     private GameObject BoxCopy;
-    public GameObject Holder;
+    public GameObject allUnits;
     private bool Selecting;
-    private Vector2 BoxPosition;
-    float x1;
-    float x2;
-    float y1;
-    float y2;
+    private Vector3 BoxPosition;
+    float x1;   //start click
+    float z1;
+    float x2;   //current/end click
+    float z2;
     public Team selectableTeam;
 
     public Transform plane;
@@ -21,24 +21,27 @@ public class Selection : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float x = GetWorldPositionAtDepth(Input.mousePosition, plane.position.z).x;
-        float y = GetWorldPositionAtDepth(Input.mousePosition, plane.position.z).y;
+        float x = GetWorldPositionAtHeight(Input.mousePosition, plane.position.y).x;
+        float z = GetWorldPositionAtHeight(Input.mousePosition, plane.position.y).z;
 
+        Debug.Log(GetWorldPositionAtHeight(Input.mousePosition, plane.position.y));
 
-
+        //Debug.Log(Input.mousePosition + " " + x + "," + z);
 
 
 
         if (Input.GetMouseButtonDown(0))
         {
+
+            
             x1 = x;
-            y1 = y;
+            z1 = z;
             Selecting = true;
             BoxCopy = (GameObject)Instantiate(Box);
 
-            for (int i = 0; i < Holder.transform.childCount; i++)
+            for (int i = 0; i < allUnits.transform.childCount; i++)
             {
-                Holder.transform.GetChild(i).GetComponent<Unit>().Selected = false;
+                allUnits.transform.GetChild(i).GetComponent<Unit>().Selected = false;
 
             }
             //everything happens the one frame the mouse is pressed down
@@ -47,27 +50,27 @@ public class Selection : MonoBehaviour
         if (Selecting)
         {
             x2 = x;
-            y2 = y;
+            z2 = z;
 
             float width = x2 - x1;
-            float height = y2 - y1;
-            BoxPosition = new Vector2(width / 2 + x1, height / 2 + y1);
+            float height = z2 - z1;
+            BoxPosition = new Vector3(width / 2 + x1, 0, height / 2 + z1);
 
-            BoxCopy.transform.localScale = new Vector2(width, height);
-            BoxCopy.transform.position = BoxPosition;
+            BoxCopy.transform.localScale = new Vector3(width, 10, height);
+            BoxCopy.transform.position = new Vector3(BoxPosition.x, 0, BoxPosition.z);
 
         }
 
         if (BoxCopy && Input.GetMouseButtonUp(0))
         {
             Selecting = false;
-            for (int i = 0; i < Holder.transform.childCount; i++)
+            for (int i = 0; i < allUnits.transform.childCount; i++)
             {
-                GameObject Child = Holder.transform.GetChild(i).gameObject;
+                GameObject Child = allUnits.transform.GetChild(i).gameObject;
                 if ((((Child.transform.position.x > x1 && Child.transform.position.x < x2) ||
                     (Child.transform.position.x < x1 && Child.transform.position.x > x2)) &&
-                    ((Child.transform.position.y > y1 && Child.transform.position.y < y2) ||
-                    (Child.transform.position.y < y1 && Child.transform.position.y > y2))) &&
+                    ((Child.transform.position.z > z1 && Child.transform.position.z < z2) ||
+                    (Child.transform.position.z < z1 && Child.transform.position.z > z2))) &&
                         (selectableTeam == Child.GetComponent<Unit>().team))
                 {
                     Child.GetComponent<Unit>().Selected = true;
@@ -80,13 +83,15 @@ public class Selection : MonoBehaviour
 
     }
 
-    //GetWorldPos for Perspective camera.
-    public static Vector3 GetWorldPositionAtDepth(Vector3 screenPosition, float z)
+    //GetWorldPos for Perspective camera when looking for above
+    public static Vector3 GetWorldPositionAtHeight(Vector3 screenPosition, float y)
     {
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
-        Plane xy = new Plane(Vector3.forward, new Vector3(0, 0, z));
+        Plane xy = new Plane(Vector3.down, new Vector3(0, y, 0));
+        //Plane xy = new Plane(new Vector3(4, 0, 4), new Vector3(-4,0,4), new Vector3(-4,0,-4));
         float distance;
         xy.Raycast(ray, out distance);
+        Debug.Log(distance);
         return ray.GetPoint(distance);
     }
 }
