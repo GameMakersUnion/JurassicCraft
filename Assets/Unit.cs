@@ -17,7 +17,10 @@ public class Unit : MonoBehaviour {
     public Animator anim;
     public GarbagePiece garbage;
 
-
+    int health = 100;
+    const float timeLimit = 1.0f; // 1 seconds
+    float timeAmount = timeLimit;
+    bool timerActive = false;
 
     public bool carrying
     {
@@ -89,6 +92,38 @@ public class Unit : MonoBehaviour {
             Vector3 tempTarget = Selection.GetWorldPositionAtDepth(Input.mousePosition, 0f);
             target = new Vector3(tempTarget.x, tempTarget.y, 0);
          }
+
+        if (timerActive && timeAmount > 0)
+        {
+            timeAmount -= Time.deltaTime;
+        }
+        else if (timeAmount <= 0) 
+        {
+            timerActive = false;
+            timeAmount = timeLimit;
+        }
+
+    }
+
+    public void Damage()
+    {
+        if (health - 10 >= 0)
+        {
+            health -= 10;
+        }
+        
+    }
+
+    void OnCollisionStay2D(Collision2D other)
+    {
+        Unit u = other.gameObject.GetComponent<Unit>();
+
+        if (u != null && u.team != team && timeAmount >= timeLimit )
+        {
+            u.Damage();
+            Debug.Log(u.gameObject.name + " health: " + u.health);
+            timerActive = true;
+        }
     }
 
 }
