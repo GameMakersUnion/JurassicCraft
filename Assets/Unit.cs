@@ -1,12 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum Team { Racoons, Cats };
+public enum Team { Saurischians, Ornithischians };
 
 
 public class Unit : MonoBehaviour {
-    
-    public enum State { Idling, Moving, Mining, Hissing, Fighting }
+
+    public enum State { Idling, Moving, Fighting, Eating }
     public State state;
 
     public Team team;
@@ -15,26 +15,18 @@ public class Unit : MonoBehaviour {
 
     //private bool moving = false;
     public Animator anim;
-    public GarbagePiece garbage;
 
     int health = 100;
-    const float timeLimit = 1.0f; // 1 seconds
-    float timeAmount = timeLimit;
-    bool timerActive = false;
+    //const float timeLimit = 1.0f; // 1 seconds
+    //float timeAmount = timeLimit;
+    //bool timerActive = false;
+
+    private float timerAttack;
+    public static float attackDelayTime = .2f;
 
     //const float txrexh = 7.5f;
-    float trex_ext;
+    float dinoMidpointHeight;
 
-    public bool carrying
-    {
-        get
-        {
-            return (garbage != null);
-            //return (garbage != null) ? true : false;
-            //if (garbage != null) return true;
-            //else return false;
-        }
-    }
 
     //public Vector3? target = null;  //nullable!
     public Vector3? target;
@@ -57,17 +49,30 @@ public class Unit : MonoBehaviour {
         tooClose = false;
         anim = GetComponent<Animator>();
         state = State.Idling;
-        trex_ext = collider.bounds.extents.y;
+        dinoMidpointHeight = collider.bounds.size.y/2;
+
+        //initialize timer
+        timerAttack = Time.time;
 
 	}
-	
+
+
+    void FixedUpdate()
+    {
+		//timer ticks
+		float deltaTick = Time.time - timerAttack;
+		if (deltaTick > attackDelayTime){
+			timerAttack += deltaTick;
+			Damage();
+		}
+    }
 
 
     void Update()
     {
         
         float ty = Terrain.activeTerrain.SampleHeight(new Vector3(transform.position.x, 0, transform.position.z));
-        transform.position = new Vector3(transform.position.x, ty + trex_ext, transform.position.z);
+        transform.position = new Vector3(transform.position.x, ty + dinoMidpointHeight, transform.position.z);
 
         //right click
         if (Input.GetMouseButtonDown(1) && Selected)
@@ -127,15 +132,15 @@ public class Unit : MonoBehaviour {
 
 
 
-        if (timerActive && timeAmount > 0)
-        {
-            timeAmount -= Time.deltaTime;
-        }
-        else if (timeAmount <= 0) 
-        {
-            timerActive = false;
-            timeAmount = timeLimit;
-        }
+        //if (timerActive && timeAmount > 0)
+        //{
+        //    timeAmount -= Time.deltaTime;
+        //}
+        //else if (timeAmount <= 0) 
+        //{
+        //    timerActive = false;
+        //    timeAmount = timeLimit;
+        //}
 
 
 
@@ -161,14 +166,16 @@ public class Unit : MonoBehaviour {
 
     void OnCollisionStay2D(Collision2D other)
     {
-        Unit u = other.gameObject.GetComponent<Unit>();
 
-        if (u != null && u.team != team && timeAmount >= timeLimit )
-        {
-            u.Damage();
-            Debug.Log(u.gameObject.name + " health: " + u.health);
-            timerActive = true;
-        }
+
+        //Unit u = other.gameObject.GetComponent<Unit>();
+        //
+        //if (u != null && u.team != team && timeAmount >= timeLimit )
+        //{
+        //    u.Damage();
+        //    Debug.Log(u.gameObject.name + " health: " + u.health);
+        //    timerActive = true;
+        //}
     }
 
 }
