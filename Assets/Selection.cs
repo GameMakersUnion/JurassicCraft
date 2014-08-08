@@ -24,10 +24,6 @@ public class Selection : MonoBehaviour
         float x = GetWorldPositionAtHeight(Input.mousePosition, plane.position.y).x;
         float z = GetWorldPositionAtHeight(Input.mousePosition, plane.position.y).z;
 
-        Debug.Log(GetWorldPositionAtHeight(Input.mousePosition, plane.position.y));
-
-        //Debug.Log(Input.mousePosition + " " + x + "," + z);
-
 
 
         if (Input.GetMouseButtonDown(0))
@@ -91,7 +87,6 @@ public class Selection : MonoBehaviour
         //Plane xy = new Plane(new Vector3(4, 0, 4), new Vector3(-4,0,4), new Vector3(-4,0,-4));
         float distance;
         xy.Raycast(ray, out distance);
-        Debug.Log(distance);
         return ray.GetPoint(distance);
     }
 }

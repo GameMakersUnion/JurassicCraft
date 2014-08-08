@@ -22,6 +22,9 @@ public class Unit : MonoBehaviour {
     float timeAmount = timeLimit;
     bool timerActive = false;
 
+    //const float txrexh = 7.5f;
+    float trex_ext;
+
     public bool carrying
     {
         get
@@ -37,61 +40,92 @@ public class Unit : MonoBehaviour {
     public Vector3? target;
     //private bool movingTowardsTarget = false;
 
-    private const float regSpeed = 5f;
+    private const float regMoveSpeed = 25f;
     private const float minSpeed = 0.001f;
-    private float speed = regSpeed;
+    private float moveSpeed = regMoveSpeed;
     private bool tooClose;
+
+
+    private const float regTurnSpeed = 5f;
+    private float turnSpeed = regTurnSpeed;
 
 	// Use this for initialization
 	void Start () {
         
         target = null;
-        speed = regSpeed;
+        moveSpeed = regMoveSpeed;
         tooClose = false;
         anim = GetComponent<Animator>();
         state = State.Idling;
+        trex_ext = collider.bounds.extents.y;
+
 	}
 	
-	// Update is called once per frame
-	void LateUpdate () {
 
-        if (target != null)
-        {
-            state = State.Moving;
-            anim.SetBool("moving", true);
-
-            //if arrives at target then { movingTowardsTarget = false; target = null; }
-            float step = speed * Time.deltaTime;
-            float distAway = Vector3.Distance(transform.position, (Vector3)target);
-
-
-            if (distAway < 1 && speed > minSpeed)
-            {
-                tooClose = true;
-                speed /= 2;
-            }
-
-            transform.position = Vector3.MoveTowards(transform.position, (Vector3)target, step);
-            
-            if (tooClose)
-            {
-                state = State.Idling;
-                anim.SetBool("moving", false);
-                Start();
-                //movingTowardsTarget = true;
-            }
-
-        }
-	}
 
     void Update()
     {
+        
+        float ty = Terrain.activeTerrain.SampleHeight(new Vector3(transform.position.x, 0, transform.position.z));
+        transform.position = new Vector3(transform.position.x, ty + trex_ext, transform.position.z);
+
         //right click
         if (Input.GetMouseButtonDown(1) && Selected)
         {
             Vector3 tempTarget = Selection.GetWorldPositionAtHeight(Input.mousePosition, 0f);
-            target = new Vector3(tempTarget.x, transform.position.y, tempTarget.z);
-         }
+         
+            target = new Vector3(tempTarget.x, ty, tempTarget.z);
+        }
+
+
+        if (target != null)
+        {
+
+
+            //rotation stuff
+            //http://docs.unity3d.com/ScriptReference/Vector3.RotateTowards.html
+            Vector3 targetDir = (Vector3)target - transform.position;
+            targetDir = new Vector3(targetDir.x,  0, targetDir.z);
+            float turnStep = turnSpeed * Time.deltaTime;
+            Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, turnStep, 0.0F);
+            Debug.DrawRay(transform.position, newDir, Color.red);
+            transform.rotation = Quaternion.LookRotation(newDir);
+
+
+            //moving stuff
+            state = State.Moving;
+            //anim.SetBool("moving", true);
+
+            //if arrives at target then { movingTowardsTarget = false; target = null; }
+            float step = moveSpeed * Time.deltaTime;
+            float distAway = Vector3.Distance(transform.position, (Vector3)target);
+
+
+            if (distAway < 1 && moveSpeed > minSpeed)
+            {
+                tooClose = true;
+                moveSpeed /= 2;
+            }
+
+            transform.position = Vector3.MoveTowards(transform.position, (Vector3)target, step);
+
+     
+
+
+            if (tooClose)
+            {
+                state = State.Idling;
+                //anim.SetBool("moving", false);
+                Start();
+                //movingTowardsTarget = true;
+            }
+
+
+
+
+        }
+
+
 
         if (timerActive && timeAmount > 0)
         {
@@ -102,6 +136,17 @@ public class Unit : MonoBehaviour {
             timerActive = false;
             timeAmount = timeLimit;
         }
+
+
+
+
+
+    }
+
+    // Update is called once per frame
+    void LateUpdate()
+    {
+
 
     }
 
