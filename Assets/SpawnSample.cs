@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class SpawnScript : MonoBehaviour {
+public class SpawnSample : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
