@@ -1,0 +1,8 @@
+newmtl material
+Ka 0.267000 0.267000 0.267000
+Kd 0.723000 0.723000 0.723000
+Ks 1.000000 1.000000 1.000000
+Ns 50.000000
+Tr 0.000000
+illum 2
+map_Kd H:\GMU_racoons\Pictures\images-Textures-roof-1_roof.jpg
