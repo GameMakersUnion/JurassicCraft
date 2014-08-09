@@ -89,6 +89,19 @@ public class Selection : MonoBehaviour
         xy.Raycast(ray, out distance);
         return ray.GetPoint(distance);
     }
+
+    public static Vector3 GetPlaneXZAtHeight(Vector3 screenPosition, float y)
+    {
+        Ray ray = Camera.main.ScreenPointToRay(screenPosition);
+        Plane xz = new Plane(Vector3.down, new Vector3(0, y, 0));
+        //Plane xy = new Plane(new Vector3(4, 0, 4), new Vector3(-4,0,4), new Vector3(-4,0,-4));
+        Debug.DrawRay(Camera.main.transform.position, ray.direction * 100, Color.green);
+        float distance;
+        xz.Raycast(ray, out distance);
+        Vector3 v = new Vector3(ray.GetPoint(distance).x, y, ray.GetPoint(distance).z);
+
+        return v;
+    }
 }
 
 
