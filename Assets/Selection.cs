@@ -6,6 +6,8 @@ public class Selection : MonoBehaviour
 
     public GameObject Box;
     private GameObject BoxCopy;
+    public int cursorHeight;
+    private const int cursorHeightDefault = 10;
     public GameObject allUnits;
     private bool Selecting;
     private Vector3 BoxPosition;
@@ -17,6 +19,14 @@ public class Selection : MonoBehaviour
 
     public Transform plane;
 
+
+    void Start()
+    {
+        if (cursorHeight == null)
+        {
+            cursorHeight = cursorHeightDefault;
+        }
+    }
 
     // Update is called once per frame
     void Update()
@@ -52,7 +62,7 @@ public class Selection : MonoBehaviour
             float height = z2 - z1;
             BoxPosition = new Vector3(width / 2 + x1, 0, height / 2 + z1);
 
-            BoxCopy.transform.localScale = new Vector3(width, 10, height);
+            BoxCopy.transform.localScale = new Vector3(width, cursorHeight, height);
             BoxCopy.transform.position = new Vector3(BoxPosition.x, 0, BoxPosition.z);
 
         }
