@@ -29,23 +29,13 @@ public class Unit : MonoBehaviour {
 
 
     //public Vector3? target = null;  //nullable!
-    public Vector3? target;
-    //private bool movingTowardsTarget = false;
-
-    private const float regMoveSpeed = 25f;
-    private const float minSpeed = 0.001f;
-    private float moveSpeed = regMoveSpeed;
+    public Vector3 target;
+    private const float moveSpeed = 1f;
     private bool tooClose;
-
-
-    private const float regTurnSpeed = 5f;
-    private float turnSpeed = regTurnSpeed;
+    private const float rotateSpeed = 5f;
 
 	// Use this for initialization
 	void Start () {
-        
-        target = null;
-        moveSpeed = regMoveSpeed;
         tooClose = false;
         anim = GetComponent<Animator>();
         state = State.Idling;
@@ -71,64 +61,25 @@ public class Unit : MonoBehaviour {
     void Update()
     {
         
-        float ty = Terrain.activeTerrain.SampleHeight(new Vector3(transform.position.x, 0, transform.position.z));
-        transform.position = new Vector3(transform.position.x, ty + dinoMidpointHeight, transform.position.z);
+        //float ty = Terrain.activeTerrain.SampleHeight(new Vector3(transform.position.x, 0, transform.position.z));
+        //transform.position = new Vector3(transform.position.x, ty + dinoMidpointHeight, transform.position.z);
 
-        //right click
-        if (Input.GetMouseButtonDown(1) && Selected)
-        {
-            Vector3 tempTarget = Selection.GetWorldPositionAtHeight(Input.mousePosition, 0f);
-         
-            target = new Vector3(tempTarget.x, ty, tempTarget.z);
-        }
+        RightClick ();
 
 
-        if (target != null)
-        {
+       if (state == State.Moving) {
 
+					Movement ();
+				}
 
-            //rotation stuff
-            //http://docs.unity3d.com/ScriptReference/Vector3.RotateTowards.html
-            Vector3 targetDir = (Vector3)target - transform.position;
-            targetDir = new Vector3(targetDir.x,  0, targetDir.z);
-            float turnStep = turnSpeed * Time.deltaTime;
-            Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, turnStep, 0.0F);
-            Debug.DrawRay(transform.position, newDir, Color.red);
-            transform.rotation = Quaternion.LookRotation(newDir);
-
-
-            //moving stuff
-            state = State.Moving;
-            //anim.SetBool("moving", true);
-
-            //if arrives at target then { movingTowardsTarget = false; target = null; }
-            float step = moveSpeed * Time.deltaTime;
-            float distAway = Vector3.Distance(transform.position, (Vector3)target);
-
-
-            if (distAway < 1 && moveSpeed > minSpeed)
-            {
-                tooClose = true;
-                moveSpeed /= 2;
-            }
-
-            transform.position = Vector3.MoveTowards(transform.position, (Vector3)target, step);
-
-     
-
-
-            if (tooClose)
-            {
-                state = State.Idling;
-                //anim.SetBool("moving", false);
-                Start();
-                //movingTowardsTarget = true;
-            }
-
-
-
-
-        }
+//
+//            if (tooClose)
+//            {
+//                state = State.Idling;
+//                //anim.SetBool("moving", false);
+//                Start();
+//                //movingTowardsTarget = true;
+//            }
 
 
 
@@ -148,12 +99,48 @@ public class Unit : MonoBehaviour {
 
     }
 
+	void RightClick ()
+	{
+		//right click
+		if (Input.GetMouseButtonDown (1) && Selected) {
+			Vector3 tempTarget = Selection.GetWorldPositionAtHeight (Input.mousePosition, 0f);
+			target = new Vector3 (tempTarget.x, 0, tempTarget.z);
+			state = State.Moving;
+		}
+	}
+
     // Update is called once per frame
     void LateUpdate()
     {
 
 
     }
+
+	void Movement ()
+	{	CharacterController controller = GetComponent<CharacterController>();
+
+
+		//animation moving stuff
+
+		//anim.SetBool("moving", true);
+		//if arrives at target then { movingTowardsTarget = false; target = null; }
+		/*float distAway = Vector3.Distance (transform.position, (Vector3)target);
+		if (distAway < 1 && moveSpeed > minSpeed) {
+			tooClose = true;
+			moveSpeed /= 2;
+		}*/
+		controller.SimpleMove (moveSpeed * (target - transform.position));
+
+            //rotation stuff
+            //http://docs.unity3d.com/ScriptReference/Vector3.RotateTowards.html
+            Vector3 targetDir = (Vector3)target - transform.position;
+            targetDir = new Vector3(targetDir.x,  0, targetDir.z);
+            float turnStep = rotateSpeed * Time.deltaTime;
+            Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, turnStep, 0.0F);
+            Debug.DrawRay(transform.position, newDir, Color.red);
+            transform.rotation = Quaternion.LookRotation(newDir);
+
+	}
 
     public void Damage()
     {
