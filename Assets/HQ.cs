@@ -29,7 +29,7 @@ public class HQ : Damagable {
             Debug.LogWarning("Nothing attached to variable 'allUnits' in " + this.name +". Please fix.");
         }
 
-        health = 500;
+        health = 100;
 
 
 	}

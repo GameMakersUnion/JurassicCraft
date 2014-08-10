@@ -15,11 +15,21 @@ public class Engine : MonoBehaviour {
 	}
 
 	void Update(){
-		if (!friends.transform.GetChild(0)){
-				loss = true;
+		try {
+			if (friends.transform.GetChild(0)==null)
+				;
 		}
-		if (!enemies.transform.GetChild(0)){
-			win = true;
+		catch(UnityException e){
+			Engine.loss = true;
+			Debug.Log("Hello");
+		}
+		try {
+			if (enemies.transform.GetChild(0)==null)
+				;
+		}
+		catch(UnityException e){
+			Engine.win = true;
+			Debug.Log("Hello");
 		}
 	}
 
