@@ -149,10 +149,10 @@ public class Unit : MonoBehaviour {
         
     }
 
-    void OnCollisionStay(Collision other)
-    {
+    void OnTriggerStay(Collider other)
+    {	
         Unit u = other.gameObject.GetComponent<Unit>();
-		Debug.Log ("Collision on: "+gameObject.name);
+
         if (u != null && u.team != team )
         {
             u.Damage();
