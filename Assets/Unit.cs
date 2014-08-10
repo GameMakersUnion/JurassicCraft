@@ -30,7 +30,7 @@ public class Unit : MonoBehaviour {
 
     //public Vector3? target = null;  //nullable!
     public Vector3 target;
-    private const float moveSpeed = 80f;
+    private const float moveSpeed = 20f;
     private bool tooClose;
     private const float rotateSpeed = 5f;
 
