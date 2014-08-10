@@ -2,20 +2,41 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class HQ : MonoBehaviour {
+public class HQ : Damagable {
 
-    public Team team;
+    //public Team team;
+    public GameObject allUnits; //on this team
+
     int points;
-
-
+    const int spawnMax = 20;
+    int spawned = 0;
+    
 	// Use this for initialization
-	void Start () {
+	public override void Start () {
+
+        base.Start();
+
         points = 0;
+        if (allUnits != null)
+        {
+            foreach (Transform unit in allUnits.transform)
+            {
+
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Nothing attached to variable 'allUnits' in " + this.name +". Please fix.");
+        }
+
+        health = 500;
+
+
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+	    
 	}
 
 
@@ -25,18 +46,12 @@ public class HQ : MonoBehaviour {
 
         if (u != null && u.team == team)
         {
-            XferGarbageOwner(other.transform, transform);
+
         }
 
         
     }
 
-    //transfer owner
-    void XferGarbageOwner(Transform from, Transform to)
-    {
-        Unit uFrom = from.gameObject.GetComponent<Unit>();
-        HQ uTo = to.gameObject.GetComponent<HQ>();
-        Vector3 offset = new Vector3(Random.Range(2f, -2f), Random.Range(2f, -2f), 0f); 
-    }
+
     
 }

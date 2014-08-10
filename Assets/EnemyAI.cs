@@ -20,9 +20,9 @@ public class EnemyAI : MonoBehaviour {
 
 			target = friends.transform.GetChild(targetUnit).position;
 
-
+            
 			enemy.GetComponent<Unit>().ChooseNewTarget(target);
-			Debug.Log(enemy.name);
+			//Debug.Log(enemy.name);
 			
 		}
 	}
