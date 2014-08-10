@@ -21,7 +21,6 @@ public class EnemyAI : MonoBehaviour {
 				target = friends.transform.GetChild(0).position;
 			}
 			catch(UnityException e){
-				Debug.Log("Hello");
 				Engine.loss = true;
 			}
 			enemy.GetComponent<Unit>().ChooseNewTarget(target);
