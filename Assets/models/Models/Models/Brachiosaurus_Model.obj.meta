@@ -1,13 +1,15 @@
 fileFormatVersion: 2
-guid: 26b094ef6cfdaf544be44a61c8f6df05
+guid: 9eed9df836904e149b47f012513be05a
 ModelImporter:
   serializedVersion: 16
   fileIDToRecycleName:
     100000: //RootNode
+    100002: Brachiousaurus_Body
     400000: //RootNode
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: Pisanosaurus_Body
+    400002: Brachiousaurus_Body
+    2300000: Brachiousaurus_Body
+    3300000: Brachiousaurus_Body
+    4300000: Brachiousaurus_Body
     9500000: //RootNode
   materials:
     importMaterials: 1

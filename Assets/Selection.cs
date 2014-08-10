@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Selection : MonoBehaviour
 {
@@ -28,7 +29,13 @@ public class Selection : MonoBehaviour
 
     private GameObject cursorGO;
     private GameObject cursorProjectGO;
+	// counter
+	private int targetTimer;
+	private const int targetTimeout = 60;
 
+	private Queue<GameObject> targetCursorQueue;
+
+	
     void Start()
     {
         if (cursorHeight == null)
@@ -38,7 +45,9 @@ public class Selection : MonoBehaviour
 
         cursorGO = (GameObject)Instantiate(cursor, Input.mousePosition, Quaternion.identity);
         cursorProjectGO = (GameObject)Instantiate(cursorProject, Input.mousePosition, Quaternion.identity);
-    }
+		targetTimer = targetTimeout;
+		targetCursorQueue=new Queue<GameObject>();
+	}
 
     // Update is called once per frame
     void Update()
@@ -122,6 +131,11 @@ public class Selection : MonoBehaviour
                 //Vector3 vPos = GetWorldPositionAtHeight(Input.mousePosition, plane.position.y);
 
                 goToRingGO = (GameObject)Instantiate(goToRing, hitPoint.Value, Quaternion.Euler(-90, 0, 0));
+
+				if(targetCursorQueue.Count > 0)
+					Destroy(targetCursorQueue.Dequeue());
+
+				targetCursorQueue.Enqueue(goToRingGO);
                 timerGoToRing = Time.time;
             }
             else if (goToRing == null)
@@ -141,8 +155,14 @@ public class Selection : MonoBehaviour
         //    timerGoToRing = 0;
         //}
 
-
-    }
+		if (targetTimer > 0) {
+			targetTimer--;
+		} else if (targetTimer == 0) {
+			if(targetCursorQueue.Count > 0)
+				Destroy(targetCursorQueue.Dequeue());
+			targetTimer=targetTimeout;
+		}
+	}
 
     //GetWorldPos for Perspective camera when looking for above
     public static Vector3 GetWorldPositionAtHeight(Vector3 screenPosition, float yHeight)

@@ -1,13 +1,15 @@
 fileFormatVersion: 2
-guid: 1063cdf5e6024274e9fa7352f76f0a7a
+guid: bad99724596f73241b61f842f1d97c28
 ModelImporter:
   serializedVersion: 16
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: Brachiousaurus_Body
+    100000: Herrerasaurus_Body
+    100002: //RootNode
+    400000: Herrerasaurus_Body
+    400002: //RootNode
+    2300000: Herrerasaurus_Body
+    3300000: Herrerasaurus_Body
+    4300000: Herrerasaurus_Body
     9500000: //RootNode
   materials:
     importMaterials: 1
