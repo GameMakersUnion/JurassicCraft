@@ -21,10 +21,9 @@ public class Unit : MonoBehaviour {
     //float timeAmount = timeLimit;
     //bool timerActive = false;
 
-    private float timerAttack;
-    public static float attackDelayTime = .2f;
+    private int timerAttack;
+    public static int attackDelay = 30;
 
-    //const float txrexh = 7.5f;
     float dinoMidpointHeight;
 
 
@@ -33,6 +32,10 @@ public class Unit : MonoBehaviour {
     private const float moveSpeed = 20f;
     private bool tooClose;
     private const float rotateSpeed = 5f;
+
+	private Color defaultColor;
+	private const int flashTime = 10;
+	private int flashTimer;
 
 	// Use this for initialization
 	void Start () {
@@ -43,8 +46,10 @@ public class Unit : MonoBehaviour {
         Debug.Log(team + " : " + dinoMidpointHeight);
 
         //initialize timer
-        timerAttack = Time.time;
+        timerAttack = attackDelay;
 
+		defaultColor = renderer.material.color;
+		flashTimer = 0;
 	}
 
 
@@ -71,26 +76,16 @@ public class Unit : MonoBehaviour {
        {
 			Movement();
 	   }
-//
-//            if (tooClose)
-//            {
-//                state = State.Idling;
-//                //anim.SetBool("moving", false);
-//                Start();
-//                //movingTowardsTarget = true;
-//            }
 
+		if (timerAttack > 0) {
+				timerAttack--;
+		}
 
-
-        //if (timerActive && timeAmount > 0)
-        //{
-        //    timeAmount -= Time.deltaTime;
-        //}
-        //else if (timeAmount <= 0) 
-        //{
-        //    timerActive = false;
-        //    timeAmount = timeLimit;
-        //}
+		if (flashTimer > 0) {
+						flashTimer--;
+				} else {
+						renderer.material.color = defaultColor;
+				}
     }
 
 	void RightClick ()
@@ -131,7 +126,6 @@ public class Unit : MonoBehaviour {
 			moveSpeed /= 2;
 		}*/
 
-		//controller.SimpleMove (moveSpeed * (target - transform.position));
         controller.SimpleMove(moveSpeed * (target - transform.position).normalized);
         Debug.Log(team.ToString() + "moving");
 	    //rotation stuff
@@ -146,22 +140,32 @@ public class Unit : MonoBehaviour {
 	}
 
     public void Damage()
-    {
-        if (health - 10 >= 0)
-        {
-            health -= 10;
-        }
-        
+	{
+
+        if (health - 10 >= 0) {
+						health -= 10;
+						flashRed ();
+				} else {
+						Destroy (gameObject);
+				}
     }
+
+	public void flashRed() {
+
+		renderer.material.color = Color.red;
+		flashTimer = flashTime;
+
+	}
+
 
     void OnTriggerStay(Collider other)
     {	
         Unit u = other.gameObject.GetComponent<Unit>();
-
-        if (u != null && u.team != team )
+        if (u != null && u.team != team && timerAttack == 0 )
         {
             u.Damage();
             Debug.Log(u.gameObject.name + " health: " + u.health);
+			timerAttack=attackDelay;
         }
     }
 
