@@ -16,7 +16,7 @@ public class Unit : MonoBehaviour {
     //private bool moving = false;
     public Animator anim;
 
-    int health = 100;
+    public int health = 100;
     //const float timeLimit = 1.0f; // 1 seconds
     //float timeAmount = timeLimit;
     //bool timerActive = false;
@@ -49,12 +49,12 @@ public class Unit : MonoBehaviour {
 
     void FixedUpdate()
     {
-		//timer ticks
-		float deltaTick = Time.time - timerAttack;
-		if (deltaTick > attackDelayTime){
-			timerAttack += deltaTick;
-			Damage();
-		}
+//		//timer ticks
+//		float deltaTick = Time.time - timerAttack;
+//		if (deltaTick > attackDelayTime){
+//			timerAttack += deltaTick;
+//			Damage();
+//		}
     }
 
 
@@ -151,18 +151,15 @@ public class Unit : MonoBehaviour {
         
     }
 
-    void OnCollisionStay2D(Collision2D other)
+    void OnCollisionStay(Collision other)
     {
-
-
-        //Unit u = other.gameObject.GetComponent<Unit>();
-        //
-        //if (u != null && u.team != team && timeAmount >= timeLimit )
-        //{
-        //    u.Damage();
-        //    Debug.Log(u.gameObject.name + " health: " + u.health);
-        //    timerActive = true;
-        //}
+        Unit u = other.gameObject.GetComponent<Unit>();
+		Debug.Log ("Collision on: "+gameObject.name);
+        if (u != null && u.team != team )
+        {
+            u.Damage();
+            Debug.Log(u.gameObject.name + " health: " + u.health);
+        }
     }
 
 }
