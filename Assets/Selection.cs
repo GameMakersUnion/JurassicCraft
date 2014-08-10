@@ -132,6 +132,8 @@ public class Selection : MonoBehaviour
 
                 goToRingGO = (GameObject)Instantiate(goToRing, hitPoint.Value, Quaternion.Euler(-90, 0, 0));
 				targetCursorQueue.Enqueue(goToRingGO);
+				if(targetCursorQueue.Count > 0)
+					Destroy(targetCursorQueue.Dequeue());
                 timerGoToRing = Time.time;
             }
             else if (goToRing == null)
