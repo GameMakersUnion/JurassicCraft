@@ -40,6 +40,7 @@ public class Unit : MonoBehaviour {
         anim = GetComponent<Animator>();
         state = State.Idling;
         dinoMidpointHeight = collider.bounds.size.y/2;
+        Debug.Log(team + " : " + dinoMidpointHeight);
 
         //initialize timer
         timerAttack = Time.time;
@@ -61,17 +62,15 @@ public class Unit : MonoBehaviour {
     void Update()
     {
         
-        //float ty = Terrain.activeTerrain.SampleHeight(new Vector3(transform.position.x, 0, transform.position.z));
-        //transform.position = new Vector3(transform.position.x, ty + dinoMidpointHeight, transform.position.z);
+        float ty = Terrain.activeTerrain.SampleHeight(new Vector3(transform.position.x, 0, transform.position.z));
+        transform.position = new Vector3(transform.position.x, ty + dinoMidpointHeight, transform.position.z);
 
         RightClick ();
 
-
-       if (state == State.Moving) {
-
-					Movement ();
-				}
-
+       if (state == State.Moving) 
+       {
+			Movement();
+	   }
 //
 //            if (tooClose)
 //            {
@@ -92,11 +91,6 @@ public class Unit : MonoBehaviour {
         //    timerActive = false;
         //    timeAmount = timeLimit;
         //}
-
-
-
-
-
     }
 
 	void RightClick ()
@@ -104,6 +98,7 @@ public class Unit : MonoBehaviour {
 		//right click
 		if (Input.GetMouseButtonDown (1) && Selected) {
 			Vector3 tempTarget = Selection.GetWorldPositionAtHeight (Input.mousePosition, 0f);
+
 			target = new Vector3 (tempTarget.x, 0, tempTarget.z);
 			state = State.Moving;
 		}
@@ -117,7 +112,8 @@ public class Unit : MonoBehaviour {
     }
 
 	void Movement ()
-	{	CharacterController controller = GetComponent<CharacterController>();
+	{	
+        CharacterController controller = GetComponent<CharacterController>();
 
 
 		//animation moving stuff
@@ -129,8 +125,10 @@ public class Unit : MonoBehaviour {
 			tooClose = true;
 			moveSpeed /= 2;
 		}*/
-		controller.SimpleMove (moveSpeed * (target - transform.position));
-
+        float speed = 80f;
+		//controller.SimpleMove (moveSpeed * (target - transform.position));
+        controller.SimpleMove(speed * (target - transform.position).normalized);
+        Debug.Log(team.ToString() + "moving");
             //rotation stuff
             //http://docs.unity3d.com/ScriptReference/Vector3.RotateTowards.html
             Vector3 targetDir = (Vector3)target - transform.position;
@@ -160,6 +158,11 @@ public class Unit : MonoBehaviour {
             u.Damage();
             Debug.Log(u.gameObject.name + " health: " + u.health);
         }
+    }
+
+    void OnCollisionEnter(Collision other) 
+    {
+        Debug.Log("COLLIDE OTHER: " + other.gameObject.name);
     }
 
 }

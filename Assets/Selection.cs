@@ -9,6 +9,7 @@ public class Selection : MonoBehaviour
     public int cursorHeight;
     private const int cursorHeightDefault = 10;
     public GameObject allUnits;
+    public Terrain terrain;
     private bool Selecting;
     private Vector3 BoxPosition;
     float x1;   //start click
@@ -16,9 +17,17 @@ public class Selection : MonoBehaviour
     float x2;   //current/end click
     float z2;
     public Team selectableTeam;
+    public GameObject goToRing;
+    private GameObject goToRingGO;
 
-    public Transform plane;
+    float timerGoToRing;
+    float timerGoToRingLimit = 5f;
 
+    public GameObject cursor;
+    public GameObject cursorProject;
+
+    private GameObject cursorGO;
+    private GameObject cursorProjectGO;
 
     void Start()
     {
@@ -26,22 +35,40 @@ public class Selection : MonoBehaviour
         {
             cursorHeight = cursorHeightDefault;
         }
+
+        cursorGO = (GameObject)Instantiate(cursor, Input.mousePosition, Quaternion.identity);
+        cursorProjectGO = (GameObject)Instantiate(cursorProject, Input.mousePosition, Quaternion.identity);
     }
 
     // Update is called once per frame
     void Update()
     {
-        float x = GetWorldPositionAtHeight(Input.mousePosition, plane.position.y).x;
-        float z = GetWorldPositionAtHeight(Input.mousePosition, plane.position.y).z;
+        Vector3? hitPoint = null;
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit[] hits = Physics.RaycastAll(ray);
+        foreach (var hit in hits)
+        {
+            if (hit.collider is TerrainCollider)
+            {
+                hitPoint = hit.point;
+                cursorGO.transform.position = hit.point;
+                break;
+                //cursorProjectGO.transform.position = hit.point;
+            }
+        }
 
+        Vector3 worldPos = GetWorldPositionAtHeight(Input.mousePosition, terrain.transform.position.y);
+        //float tHeight = terrain.SampleHeight(worldPos) + 5f;
+        //Vector3 worldPosAbove = new Vector3(worldPos.x, tHeight, worldPos.z);
+        //cursorGO.transform.position = worldPosAbove;
+        //cursorProjectGO.transform.position = worldPosAbove;
 
 
         if (Input.GetMouseButtonDown(0))
         {
-
-            
-            x1 = x;
-            z1 = z;
+            ///no
+            x1 = worldPos.x;
+            z1 = worldPos.z;
             Selecting = true;
             BoxCopy = (GameObject)Instantiate(Box);
 
@@ -55,8 +82,8 @@ public class Selection : MonoBehaviour
 
         if (Selecting)
         {
-            x2 = x;
-            z2 = z;
+            x2 = worldPos.x;
+            z2 = worldPos.z;
 
             float width = x2 - x1;
             float height = z2 - z1;
@@ -86,15 +113,43 @@ public class Selection : MonoBehaviour
 
         }
 
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (goToRing != null && hitPoint != null)    //goToRingGO == null && 
+            {
+                //Vector3 worldPos = GetWorldPositionAtHeight(new Vector2(x, z), 0);
+                
+                //Vector3 vPos = GetWorldPositionAtHeight(Input.mousePosition, plane.position.y);
+
+                goToRingGO = (GameObject)Instantiate(goToRing, hitPoint.Value, Quaternion.Euler(-90, 0, 0));
+                timerGoToRing = Time.time;
+            }
+            else if (goToRing == null)
+            {
+                Debug.LogWarning("goToRing not attached to " + gameObject.name + ", please attach.");
+            }
+        }
+
+        //if (timerGoToRing > timerGoToRingLimit)
+        //{
+        //    Debug.Log("YA");
+        //}
+        //
+        //if (goToRingGO != null && timerGoToRing > timerGoToRingLimit)
+        //{
+        //    Destroy(goToRingGO);
+        //    timerGoToRing = 0;
+        //}
+
 
     }
 
     //GetWorldPos for Perspective camera when looking for above
-    public static Vector3 GetWorldPositionAtHeight(Vector3 screenPosition, float y)
+    public static Vector3 GetWorldPositionAtHeight(Vector3 screenPosition, float yHeight)
     {
         Ray ray = Camera.main.ScreenPointToRay(screenPosition);
-        Plane xy = new Plane(Vector3.down, new Vector3(0, y, 0));
-        //Plane xy = new Plane(new Vector3(4, 0, 4), new Vector3(-4,0,4), new Vector3(-4,0,-4));
+        Debug.DrawRay(ray.origin, ray.direction, Color.red);
+        Plane xy = new Plane(Vector3.up, new Vector3(0, yHeight, 0));   //creates a new mathematical plane at yth height to raycast into successfully.
         float distance;
         xy.Raycast(ray, out distance);
         return ray.GetPoint(distance);

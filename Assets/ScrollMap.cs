@@ -23,6 +23,7 @@ public class ScrollMap : MonoBehaviour
     bool initGUIdone = false;
     GUISkin defaultSkin;
     float speedUpAmount;
+    //bool keyboard
 
 
     enum Sections { TopLeft, Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left };
@@ -113,42 +114,37 @@ public class ScrollMap : MonoBehaviour
                 GUI.skin = emptySkin;    //this empty skin kinda invalidates the preceding condition 
             }
 
-            if (terrain != null)
-            {
-                Vector3 v = Selection.GetWorldPositionAtHeight(Camera.main.transform.position, terrain.SampleHeight(Camera.main.transform.position));
-                //Debug.Log(v);
-
-            }
-            
+            //if (terrain != null)
+            //{
+            //    Vector3 v = Selection.GetWorldPositionAtHeight(Camera.main.transform.position, terrain.SampleHeight//(Camera.main.transform.position));
+            //    //Debug.Log(v);
+            //}
 
 
+            Vector2 mouse = Event.current.mousePosition;
             bool inAnyScrollRegions = false;
             for (int i = 0; i < rectSect.Count; i++)
             {
                 
                 GUI.Box(rectSect[i], "");
-                if (rectSect[i].Contains(Event.current.mousePosition))  //mouseover
+                if (rectSect[i].Contains(mouse))  //mouseover
                 {
                     inAnyScrollRegions = true;
 
                     //calculations
                     Vector2 mousePos = Input.mousePosition;
-                    Vector2 fractionWithin = new Vector2((mousePos.x - rectSect[i].position.x) / rectSect[i].size.x, (Screen.height - mousePos.y - rectSect[i].position.y) / rectSect[i].size.y);
+                    //Vector2 fractionWithin = new Vector2((mousePos.x - rectSect[i].position.x) / rectSect[i].size.x, (Screen.height - mousePos.y - rectSect[i].position.y) / rectSect[i].size.y);
 
                     // reverse direction in half the cases
-                    if (i == 0 || i == 1 || i == 2) { fractionWithin.y = 1 - fractionWithin.y; }
-                    if (i == 0 || i == 6 || i == 7) { fractionWithin.x = 1 - fractionWithin.x; }
+                    //if (i == 0 || i == 1 || i == 2) { fractionWithin.y = 1 - fractionWithin.y; }
+                    //if (i == 0 || i == 6 || i == 7) { fractionWithin.x = 1 - fractionWithin.x; }
 
-                    Vector3 movementAmount =  Utils.vectorMult(dirWorld[i], new Vector3(fractionWithin.x, 0, fractionWithin.y)) * moveMagnitude;
+                    Vector3 movementAmount = dirWorld[i] * moveMagnitude;
+                        //Utils.vectorMult(dirWorld[i], new Vector3(fractionWithin.x, 0, fractionWithin.y)) * moveMagnitude;
                     Camera.main.transform.position += movementAmount * speedUpAmount;
                     
                     float y = Camera.main.ScreenPointToRay(mousePos).origin.y - cursorDepth;
                     Vector3 putCursorHere = Selection.GetPlaneXZAtHeight(mousePos, y);
-
-
-
-
-
 
                     if (active) 
                     {
