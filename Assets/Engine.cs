@@ -7,8 +7,8 @@ public class Engine : MonoBehaviour {
 	public GameObject friends;
 	public static bool win;
 	public static bool loss;
-	public Rect windowRectWin = new Rect(20, 20, 120, 50);
-	public Rect windowRectLoss = new Rect(20, 20, 120, 50);
+	public Rect windowRectWin = new Rect(100, 100, 120, 50);
+	public Rect windowRectLoss = new Rect(100, 100, 120, 50);
 
 	void Start(){
 
