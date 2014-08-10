@@ -17,14 +17,18 @@ public class EnemyAI : MonoBehaviour {
 		foreach (Transform enemy in enemies.transform)
 		{
 			Vector3 target = Vector3.zero;
+
 			try {
 				target = friends.transform.GetChild(0).position;
 			}
 			catch(UnityException e){
 				Engine.loss = true;
+				Debug.Log("Hello");
 			}
-			enemy.GetComponent<Unit>().ChooseNewTarget(target);
-			Debug.Log(enemy.name);
+
+            if (enemy.GetComponent<Unit>() !=null)
+    			enemy.GetComponent<Unit>().ChooseNewTarget(target);
+			//Debug.Log(enemy.name);
 			
 		}
 	}

@@ -4,19 +4,17 @@ using System.Collections;
 public enum Team { Saurischians, Ornithischians };
 
 
-public class Unit : MonoBehaviour {
+public class Unit : Damagable {
 
     public enum State { Idling, Moving, Fighting, Eating }
     public State state;
 
-    public Team team;
     public bool Selected = false;
     //public bool carrying = false;
 
     //private bool moving = false;
     public Animator anim;
 
-    public int health = 100;
     //const float timeLimit = 1.0f; // 1 seconds
     //float timeAmount = timeLimit;
     //bool timerActive = false;
@@ -33,12 +31,13 @@ public class Unit : MonoBehaviour {
     private bool tooClose;
     private const float rotateSpeed = 5f;
 
-	private Color defaultColor;
-	private const int flashTime = 10;
-	private int flashTimer;
+
 
 	// Use this for initialization
-	void Start () {
+    public override void Start()
+    {
+        base.Start();
+
         tooClose = false;
         anim = GetComponent<Animator>();
         state = State.Idling;
@@ -48,27 +47,22 @@ public class Unit : MonoBehaviour {
         //initialize timer
         timerAttack = attackDelay;
 
-		//defaultColor = renderer.material.color;
-		flashTimer = 0;
+
+
+		//
+		
+        health = 100;
 	}
 
 
-    void FixedUpdate()
+    public override void Update()
     {
-//		//timer ticks
-//		float deltaTick = Time.time - timerAttack;
-//		if (deltaTick > attackDelayTime){
-//			timerAttack += deltaTick;
-//			Damage();
-//		}
-    }
 
-
-    void Update()
-    {
+        base.Update();
         
         //float ty = Terrain.activeTerrain.SampleHeight(new Vector3(transform.position.x, 0, transform.position.z));
         //transform.position = new Vector3(transform.position.x, ty + dinoMidpointHeight, transform.position.z);
+        
 
         RightClick ();
 
@@ -81,11 +75,7 @@ public class Unit : MonoBehaviour {
 				timerAttack--;
 		}
 
-		if (flashTimer > 0) {
-						flashTimer--;
-				} else {
-						//renderer.material.color = defaultColor;
-				}
+
     }
 
 	void RightClick ()
@@ -98,12 +88,7 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
-    // Update is called once per frame
-    void LateUpdate()
-    {
 
-
-    }
 
 	public void ChooseNewTarget (Vector3 tempTarget)
 	{
@@ -127,7 +112,7 @@ public class Unit : MonoBehaviour {
 		}*/
 
         controller.SimpleMove(moveSpeed * (target - transform.position).normalized);
-        Debug.Log(team.ToString() + "moving");
+        //Debug.Log(team.ToString() + "moving");
 	    //rotation stuff
 	    //http://docs.unity3d.com/ScriptReference/Vector3.RotateTowards.html
 	    Vector3 targetDir = (Vector3)target - transform.position;
@@ -139,32 +124,15 @@ public class Unit : MonoBehaviour {
 
 	}
 
-    public void Damage()
-	{
-
-        if (health - 10 >= 0) {
-						health -= 10;
-						flashRed ();
-				} else {
-						Destroy (gameObject);
-				}
-    }
-
-	public void flashRed() {
-
-		renderer.material.color = Color.red;
-		flashTimer = flashTime;
-
-	}
 
 
     void OnTriggerStay(Collider other)
     {	
-        Unit u = other.gameObject.GetComponent<Unit>();
-        if (u != null && u.team != team && timerAttack == 0 )
+        Damagable d = other.gameObject.GetComponent<Damagable>();
+        if (d != null && d.team != team && timerAttack == 0 )
         {
-            u.Damage();
-            Debug.Log(u.gameObject.name + " health: " + u.health);
+            d.Damage();
+            Debug.Log(d.gameObject.name + " health: " + d.health);
 			timerAttack=attackDelay;
         }
     }
