@@ -23,9 +23,10 @@ public class EnemyAI : MonoBehaviour {
 			}
 			catch(UnityException e){
 				Debug.Log("Hello");
-				Engine.loss = true;
+				//Engine.loss = true;
 			}
-			enemy.GetComponent<Unit>().ChooseNewTarget(target);
+            if (enemy.GetComponent<Unit>() !=null)
+    			enemy.GetComponent<Unit>().ChooseNewTarget(target);
 			//Debug.Log(enemy.name);
 			
 		}
