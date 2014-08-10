@@ -99,8 +99,7 @@ public class Unit : MonoBehaviour {
 		if (Input.GetMouseButtonDown (1) && Selected) {
 			Vector3 tempTarget = Selection.GetWorldPositionAtHeight (Input.mousePosition, 0f);
 
-			target = new Vector3 (tempTarget.x, 0, tempTarget.z);
-			state = State.Moving;
+			ChooseNewTarget (tempTarget);
 		}
 	}
 
@@ -110,6 +109,12 @@ public class Unit : MonoBehaviour {
 
 
     }
+
+	public void ChooseNewTarget (Vector3 tempTarget)
+	{
+		target = new Vector3 (tempTarget.x, 0, tempTarget.z);
+		state = State.Moving;
+	}
 
 	void Movement ()
 	{	

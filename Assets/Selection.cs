@@ -16,7 +16,7 @@ public class Selection : MonoBehaviour
     float z1;
     float x2;   //current/end click
     float z2;
-    public Team selectableTeam;
+    public static Team selectableTeam;
     public GameObject goToRing;
     private GameObject goToRingGO;
 
