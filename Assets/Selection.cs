@@ -131,9 +131,11 @@ public class Selection : MonoBehaviour
                 //Vector3 vPos = GetWorldPositionAtHeight(Input.mousePosition, plane.position.y);
 
                 goToRingGO = (GameObject)Instantiate(goToRing, hitPoint.Value, Quaternion.Euler(-90, 0, 0));
-				targetCursorQueue.Enqueue(goToRingGO);
+
 				if(targetCursorQueue.Count > 0)
 					Destroy(targetCursorQueue.Dequeue());
+
+				targetCursorQueue.Enqueue(goToRingGO);
                 timerGoToRing = Time.time;
             }
             else if (goToRing == null)
