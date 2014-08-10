@@ -30,7 +30,7 @@ public class Unit : MonoBehaviour {
 
     //public Vector3? target = null;  //nullable!
     public Vector3 target;
-    private const float moveSpeed = 1f;
+    private const float moveSpeed = 80f;
     private bool tooClose;
     private const float rotateSpeed = 5f;
 
@@ -62,8 +62,8 @@ public class Unit : MonoBehaviour {
     void Update()
     {
         
-        float ty = Terrain.activeTerrain.SampleHeight(new Vector3(transform.position.x, 0, transform.position.z));
-        transform.position = new Vector3(transform.position.x, ty + dinoMidpointHeight, transform.position.z);
+        //float ty = Terrain.activeTerrain.SampleHeight(new Vector3(transform.position.x, 0, transform.position.z));
+        //transform.position = new Vector3(transform.position.x, ty + dinoMidpointHeight, transform.position.z);
 
         RightClick ();
 
@@ -125,18 +125,18 @@ public class Unit : MonoBehaviour {
 			tooClose = true;
 			moveSpeed /= 2;
 		}*/
-        float speed = 80f;
+
 		//controller.SimpleMove (moveSpeed * (target - transform.position));
-        controller.SimpleMove(speed * (target - transform.position).normalized);
+        controller.SimpleMove(moveSpeed * (target - transform.position).normalized);
         Debug.Log(team.ToString() + "moving");
-            //rotation stuff
-            //http://docs.unity3d.com/ScriptReference/Vector3.RotateTowards.html
-            Vector3 targetDir = (Vector3)target - transform.position;
-            targetDir = new Vector3(targetDir.x,  0, targetDir.z);
-            float turnStep = rotateSpeed * Time.deltaTime;
-            Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, turnStep, 0.0F);
-            Debug.DrawRay(transform.position, newDir, Color.red);
-            transform.rotation = Quaternion.LookRotation(newDir);
+	    //rotation stuff
+	    //http://docs.unity3d.com/ScriptReference/Vector3.RotateTowards.html
+	    Vector3 targetDir = (Vector3)target - transform.position;
+	    targetDir = new Vector3(targetDir.x,  0, targetDir.z);
+	    float turnStep = rotateSpeed * Time.deltaTime;
+	    Vector3 newDir = Vector3.RotateTowards(transform.forward, targetDir, turnStep, 0.0F);
+	    Debug.DrawRay(transform.position, newDir, Color.red);
+	    transform.rotation = Quaternion.LookRotation(newDir);
 
 	}
 
