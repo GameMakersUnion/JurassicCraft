@@ -48,7 +48,7 @@ public class Unit : MonoBehaviour {
         //initialize timer
         timerAttack = attackDelay;
 
-		defaultColor = renderer.material.color;
+		//defaultColor = renderer.material.color;
 		flashTimer = 0;
 	}
 
@@ -84,7 +84,7 @@ public class Unit : MonoBehaviour {
 		if (flashTimer > 0) {
 						flashTimer--;
 				} else {
-						renderer.material.color = defaultColor;
+						//renderer.material.color = defaultColor;
 				}
     }
 

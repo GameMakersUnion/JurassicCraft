@@ -1,13 +1,15 @@
 fileFormatVersion: 2
-guid: 708ed2d167e94a44fafe3f7893aa5222
+guid: e2e16bf83f94a2f4b85ee48783b7c18f
 ModelImporter:
   serializedVersion: 16
   fileIDToRecycleName:
-    100000: //RootNode
-    400000: //RootNode
-    2300000: //RootNode
-    3300000: //RootNode
-    4300000: Triceratops
+    100000: Pisanosaurus_Body
+    100002: //RootNode
+    400000: Pisanosaurus_Body
+    400002: //RootNode
+    2300000: Pisanosaurus_Body
+    3300000: Pisanosaurus_Body
+    4300000: Pisanosaurus_Body
     9500000: //RootNode
   materials:
     importMaterials: 1
