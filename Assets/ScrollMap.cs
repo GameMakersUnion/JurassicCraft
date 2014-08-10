@@ -19,8 +19,10 @@ public class ScrollMap : MonoBehaviour
     bool GUIinit = false;
     const float cursorDepth = 10f;
     const float moveMagnitude = 1f;
+    const float speedUpMagnitude = 2f;
     bool initGUIdone = false;
     GUISkin defaultSkin;
+    float speedUpAmount;
 
 
     enum Sections { TopLeft, Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left };
@@ -83,7 +85,15 @@ public class ScrollMap : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
+        speedUpAmount = (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightAlt)) ? speedUpMagnitude : 1f;
 
+        if (x != 0 || z != 0)
+        {
+            Vector3 movementAmount = new Vector3(x, 0, z) * moveMagnitude;
+            Camera.main.transform.position += movementAmount * speedUpAmount;
+        }        
     }
 
     void OnGUI()
@@ -129,8 +139,8 @@ public class ScrollMap : MonoBehaviour
                     if (i == 0 || i == 1 || i == 2) { fractionWithin.y = 1 - fractionWithin.y; }
                     if (i == 0 || i == 6 || i == 7) { fractionWithin.x = 1 - fractionWithin.x; }
 
-                    Vector3 movementAmount =  Utils.vMult(dirWorld[i], new Vector3(fractionWithin.x, 0, fractionWithin.y)) * moveMagnitude;
-                    Camera.main.transform.position += movementAmount;
+                    Vector3 movementAmount =  Utils.vectorMult(dirWorld[i], new Vector3(fractionWithin.x, 0, fractionWithin.y)) * moveMagnitude;
+                    Camera.main.transform.position += movementAmount * speedUpAmount;
                     
                     float y = Camera.main.ScreenPointToRay(mousePos).origin.y - cursorDepth;
                     Vector3 putCursorHere = Selection.GetPlaneXZAtHeight(mousePos, y);

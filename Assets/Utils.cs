@@ -35,7 +35,7 @@ public class Utils : MonoBehaviour {
     //http://answers.unity3d.com/questions/16824/what-happens-when-you-multiply-two-vectors.html - confirmation
     //http://docs.unity3d.com/ScriptReference/Vector3-operator_multiply.html - signature, commented out
     //public static Vector3 operator *(Vector3 a, Vector3 b)
-    public static Vector3 vMult(Vector3 a, Vector3 b)
+    public static Vector3 vectorMult(Vector3 a, Vector3 b)
     {
         return new Vector3(a.x * b.x, a.y * b.y, a.z * b.z);
     }
