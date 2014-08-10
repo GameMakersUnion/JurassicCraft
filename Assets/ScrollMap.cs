@@ -36,6 +36,7 @@ public class ScrollMap : MonoBehaviour
     Rect rectControl;
 
 
+
     // Use this for initialization
     void Start()
     {
@@ -95,6 +96,8 @@ public class ScrollMap : MonoBehaviour
             Vector3 movementAmount = new Vector3(x, 0, z) * moveMagnitude;
             Camera.main.transform.position += movementAmount * speedUpAmount;
         }        
+
+
     }
 
     void OnGUI()
