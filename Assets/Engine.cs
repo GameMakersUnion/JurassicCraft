@@ -7,11 +7,15 @@ public class Engine : MonoBehaviour {
 	public GameObject friends;
 	public static bool win;
 	public static bool loss;
-	public Rect windowRectWin = new Rect(100, 100, 120, 50);
-	public Rect windowRectLoss = new Rect(100, 100, 120, 50);
+
+
+    public Rect windowRectWin;
+    public Rect windowRectLoss;
 
 	void Start(){
-
+        Vector2 distFromEdge = ScrollMap.thickness;
+        windowRectWin = new Rect(distFromEdge.x * 2, distFromEdge.y * 2, 120, 50);
+        windowRectLoss = new Rect(distFromEdge.x * 2, distFromEdge.y * 2, 120, 50);
 	}
 
 	void Update(){

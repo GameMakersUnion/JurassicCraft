@@ -11,7 +11,8 @@ public class ScrollMap : MonoBehaviour
 
 
     bool highlightScrollRegions = true;
-    float controlHeight;
+    [HideInInspector]
+    public static float controlHeight;
     Vector2 screenAvail;
     private GameObject edgeScrollerIconActive;
     bool active = false;
@@ -27,7 +28,7 @@ public class ScrollMap : MonoBehaviour
 
 
     enum Sections { TopLeft, Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left };
-    Vector2 thickness;
+    public static Vector2 thickness;
     List<Rect> rectSect;
     List<Vector3> dirWorld;
 
@@ -36,14 +37,19 @@ public class ScrollMap : MonoBehaviour
     Rect rectControl;
 
 
+    void Awake()
+    {
+        float fractionRegion = 0.1f;
+        controlHeight = Utils.PercentToPixel(0.2f, Screen.height);
+        screenAvail = new Vector2(Screen.width, Screen.height - controlHeight); 
+        thickness = new Vector2(Utils.PercentToPixel(fractionRegion, screenAvail.y), Utils.PercentToPixel(fractionRegion, screenAvail.y));
+    }
+
 
     // Use this for initialization
     void Start()
     {
-        float fractionRegion = 0.1f;
-        controlHeight = Utils.PercentToPixel(0.2f, Screen.height);
-        screenAvail = new Vector2(Screen.width, Screen.height - controlHeight); //
-        thickness = new Vector2(Utils.PercentToPixel(fractionRegion, screenAvail.y), Utils.PercentToPixel(fractionRegion, screenAvail.y));
+
 
         //determine screen sizes
         rectSect = new List<Rect>();

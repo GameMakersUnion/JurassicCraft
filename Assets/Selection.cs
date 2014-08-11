@@ -25,17 +25,15 @@ public class Selection : MonoBehaviour
     float timerGoToRingLimit = 5f;
 
     public GameObject cursor;
-    public GameObject cursorProject;
 
     private GameObject cursorGO;
-    private GameObject cursorProjectGO;
 	// counter
 	private int targetTimer;
 	private const int targetTimeout = 60;
 
 	private Queue<GameObject> targetCursorQueue;
 
-	
+    public GameObject cursorTest;
     void Start()
     {
         if (cursorHeight == null)
@@ -44,10 +42,24 @@ public class Selection : MonoBehaviour
         }
 
         cursorGO = (GameObject)Instantiate(cursor, Input.mousePosition, Quaternion.identity);
-        cursorProjectGO = (GameObject)Instantiate(cursorProject, Input.mousePosition, Quaternion.identity);
 		targetTimer = targetTimeout;
 		targetCursorQueue=new Queue<GameObject>();
+        
 	}
+    
+    //cursorTest puts cursor at top of screen instead, deactivated though
+    void FixedUpdate()
+    {
+        //Vector3 worldpos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //worldpos.y -= 5;
+        Vector3 worldpos = Camera.main.transform.position + Camera.main.ScreenPointToRay(Input.mousePosition).direction * 5f;
+        if (cursorTest != null)
+        {
+            cursorTest.transform.position = worldpos;
+            Debug.Log(worldpos);
+        }
+
+    }
 
     // Update is called once per frame
     void Update()
